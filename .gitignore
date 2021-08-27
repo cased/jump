@@ -1,0 +1,5 @@
+.vscode
+jump
+.terraform*
+terraform.tfstate*
+*.generated

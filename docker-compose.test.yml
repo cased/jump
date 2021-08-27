@@ -1,0 +1,114 @@
+networks:
+    default:
+        driver: bridge
+        ipam:
+            driver: default
+    aws_metadata:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: "169.254.0.0/16"
+                  gateway: 169.254.0.1
+
+services:
+    ec2-metadata:
+        image: amazon/amazon-ec2-metadata-mock:v1.9.0
+        command: -p 80
+        privileged: true
+        expose:
+            - 80
+        networks:
+            aws_metadata:
+                # This special IP address is recognized by the AWS SDKs and AWS CLI
+                ipv4_address: "169.254.169.254"
+            default:
+
+    localstack:
+        init: true
+        environment:
+            - DEFAULT_REGION=us-east-1
+            - SERVICES=iam,sts,ec2
+        image: localstack/localstack:0.12.16
+        networks:
+            - default
+        ports:
+            - '4566:4566'
+            - '4571:4571'
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        healthcheck:
+            test:
+                - CMD
+                - bash
+                - -c
+                - awslocal ec2 describe-instances
+            interval: 5s
+            timeout: 10s
+            start_period: 10s
+
+    terraform-apply:
+        init: true
+        image: hashicorp/terraform:0.12.31
+        volumes:
+            - ./testdata/terraform:/config/
+        networks:
+            default:
+        depends_on:
+            localstack:
+                condition: service_healthy
+
+        entrypoint: ["/bin/sh", "-exc"]        
+        command: ["cd /config/ && terraform init && terraform apply -auto-approve && touch /root/done.generated && exec tail -F /tmpnotexist"]
+        healthcheck:
+            test:
+                - CMD
+                - sh
+                - -c
+                - test -f /root/done.generated
+            interval: 5s
+            timeout: 1s
+            start_period: 30s
+
+
+    ecs-local-endpoints:
+        image: amazon/amazon-ecs-local-container-endpoints:1.4.0-amd64
+        depends_on:
+            localstack:
+                condition: service_healthy
+        volumes:
+            - /var/run:/var/run
+        environment:
+            - AWS_REGION=us-east-1
+            - AWS_ACCESS_KEY_ID=anything
+            - AWS_SECRET_ACCESS_KEY=goes
+            - IAM_ENDPOINT=http://localstack:4566
+            - STS_ENDPOINT=http://localstack:4566
+        networks:
+            aws_metadata:
+                # This special IP address is recognized by the AWS SDKs and AWS CLI
+                ipv4_address: "169.254.170.2"
+            default:
+
+    app:
+        build: .
+        command: ["/config/static.yaml", "/config/terraform-defaults.json", "/config/manifest.json.generated"]
+        volumes:
+            - ./testdata:/config
+        depends_on:
+            terraform-apply:
+                condition: service_healthy
+            ecs-local-endpoints: 
+                condition: service_started
+            ec2-metadata:
+                condition: service_started
+        networks:
+            aws_metadata:
+                ipv4_address: "169.254.170.3"
+            default:
+        environment:
+            - AWS_ENDPOINT=http://localstack:4566
+
+            - ECS_CONTAINER_METADATA_URI=http://169.254.170.2/v3
+            - AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=/role/jump-test-role
+
+            - ONCE=true

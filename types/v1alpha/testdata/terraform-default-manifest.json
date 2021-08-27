@@ -1,0 +1,24 @@
+{
+ "prompts": [
+  {
+   "hostname": "12345678.example.com",
+   "name": "i-12345678",
+   "description": "newest EC2 instance",
+   "kind": "host",
+   "provider": "ec2",
+   "annotations": {
+    "launchTime": "2021-07-11T00:00:00Z"
+   }
+  },
+  {
+   "hostname": "12345678.example.com",
+   "name": "i-12345678",
+   "description": "oldest EC2 instance",
+   "kind": "host",
+   "provider": "ec2",
+   "annotations": {
+    "launchTime": "2021-07-11T00:00:00Z"
+   }
+  }
+ ]
+}

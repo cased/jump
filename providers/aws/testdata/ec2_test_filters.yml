@@ -1,0 +1,10 @@
+queries:
+- provider: ec2
+  filters:
+    region: us-south-1
+    tag:Name: '*test*'
+  limit: 1
+  sortBy: launchTime
+  sortOrder: desc
+  prompt:
+    description: The most recently launched test instance in us-south-1

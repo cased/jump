@@ -1,0 +1,27 @@
+queries:
+  - provider: ecs
+    limit: 1000
+    filters:
+      region: us-west-1
+      cluster: test-cluster
+      task-group: test-service
+    prompt:
+      name: Test Rails Console
+      description: Use to perform exploratory debugging on the test cluster
+      shellCommand: ./bin/rails console
+      labels:
+        environment: test
+  - provider: ecs
+    filters:
+      region: us-west-2
+      cluster: prod-cluster
+      container-name: prod-container-name
+    limit: 1
+    sortBy: startedAt
+    sortOrder: desc
+    prompt:
+      name: Production Rails Console
+      description: Use to perform exploratory debugging on the production cluster
+      shellCommand: ./bin/rails console
+      labels:
+        environment: prod

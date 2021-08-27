@@ -1,0 +1,25 @@
+name: make test
+on:
+  - push
+
+jobs:
+  go-test:
+    strategy:
+      matrix:
+        go-version: [1.16.x]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go-version }}
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/go/pkg/mod              # Module download cache
+          ~/.cache/go-build         # Build cache (Linux)
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - uses: actions/checkout@v2
+    - run: make test

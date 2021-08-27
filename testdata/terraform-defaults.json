@@ -1,0 +1,1 @@
+{"queries":[{"filters":{},"limit":1,"prompt":{"description":"newest EC2 instance"},"provider":"ec2","sortBy":"launchTime","sortOrder":"desc"},{"filters":{},"limit":1,"prompt":{"description":"oldest EC2 instance"},"provider":"ec2","sortBy":"launchTime","sortOrder":"asc"}]}

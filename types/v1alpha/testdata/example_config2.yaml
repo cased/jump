@@ -1,0 +1,4 @@
+queries:
+  - provider: ec2
+    prompt:
+      description: An EC2 instance

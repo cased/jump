@@ -1,0 +1,4 @@
+queries:
+- provider: ecs
+  prompt:
+    description: Default container debug shell

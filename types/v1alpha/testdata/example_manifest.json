@@ -1,0 +1,48 @@
+{
+ "prompts": [
+  {
+   "hostname": "12345678.example.com",
+   "name": "i-12345678",
+   "description": "An EC2 instance",
+   "kind": "host",
+   "provider": "ec2",
+   "annotations": {
+    "launchTime": "2021-07-11T00:00:00Z"
+   }
+  },
+  {
+   "hostname": "9101112.example.com",
+   "name": "i-9101112",
+   "description": "An EC2 instance",
+   "kind": "host",
+   "provider": "ec2",
+   "annotations": {
+    "launchTime": "2020-07-11T00:00:00Z"
+   }
+  },
+  {
+   "hostname": "12345678.example.com",
+   "name": "example-service/test",
+   "description": "Default container debug shell",
+   "jumpCommand": "docker exec -it $(docker ps --filter \"label=com.amazonaws.ecs.container-name=test\" --filter \"label=com.amazonaws.ecs.task-arn=arn:aws:ecs:us-east-1:012345678910:task/01234567-0123-0123-0123-012345678910\" -q | head -n1)",
+   "kind": "container",
+   "provider": "ecs",
+   "annotations": {
+    "startedAt": "2015-03-26 19:54:00 +0000 UTC"
+   },
+   "proxyJumpSelector": {
+    "app": "bastion"
+   }
+  },
+  {
+   "hostname": "example.com",
+   "username": "example",
+   "port": "2222",
+   "provider": "static",
+   "labels": {
+    "app": "bastion"
+   },
+   "featured": true
+  }
+ ]
+}

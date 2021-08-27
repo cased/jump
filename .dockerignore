@@ -1,0 +1,11 @@
+docker-compose.test.yml
+Makefile
+jump
+.github
+.vscode
+Dockerfile
+testdata
+**/testdata
+.git
+.gitignore
+.dockerignore

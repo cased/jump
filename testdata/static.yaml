@@ -1,0 +1,6 @@
+queries:
+  - provider: static
+    prompt:
+      featured: true
+      hostname: example.com
+      username: example
