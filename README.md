@@ -24,6 +24,7 @@ Queries have several components:
   - `description`: A longer description of the prompt.
   - `jumpCommand`: A command to execute immediately after connecting to the host over SSH. Example: `docker exec -it app-container`
   - `shellCommand`: A command to execute immediately after running `jumpCommand`. Example: `./bin/rails console`
+  - `preDownloadCommand`: A command to run before processing a user request to download a file. The tokens `{filepath}` and `{filename}` will be replaced with the full path and filename of the file to download. The command is expected to output the path to the file to download to stdout.
   - `kind`: The "kind" of prompt this is. Currently supported values are "container" and "host".
   - `featured`: Set to true to display this prompt above the fold on the Cased Shell Dashboard.
   - `labels`: A list of key/value pairs describing key characteristics of this prompt. The Cased Shell Dashboard will support filtering prompts by these labels.

@@ -202,10 +202,11 @@ func (provider *ECS) Query(query *jump.PromptQuery) ([]*jump.Prompt, error) {
 
 				taskContainer := fmt.Sprintf("%s/%s", *task.Group, *container.Name)
 				prompt := &jump.Prompt{
-					Kind:        "container",
-					Name:        fmt.Sprintf("%s/%s", *task.Group, *container.Name),
-					Hostname:    provider.cache.ec2InstancePrivateDnsNames[*containerInstance.Ec2InstanceId],
-					JumpCommand: fmt.Sprintf("docker exec -it $(docker ps --filter \"label=com.amazonaws.ecs.container-name=%s\" --filter \"label=com.amazonaws.ecs.task-arn=%s\" -q | head -n1)", *container.Name, *container.TaskArn),
+					Kind:               "container",
+					Name:               fmt.Sprintf("%s/%s", *task.Group, *container.Name),
+					Hostname:           provider.cache.ec2InstancePrivateDnsNames[*containerInstance.Ec2InstanceId],
+					JumpCommand:        fmt.Sprintf("docker exec -it $(docker ps --filter \"label=com.amazonaws.ecs.container-name=%s\" --filter \"label=com.amazonaws.ecs.task-arn=%s\" -q | head -n1)", *container.Name, *container.TaskArn),
+					PreDownloadCommand: fmt.Sprintf("sh -c 'mkdir -p /tmp/cased-downloads; docker cp $(docker ps --filter \"label=com.amazonaws.ecs.container-name=%s\" --filter \"label=com.amazonaws.ecs.task-arn=%s\" -q | head -n1):{filepath} /tmp/cased-downloads/; echo /tmp/cased-downloads/{filename}'", *container.Name, *container.TaskArn),
 					Annotations: map[string]string{
 						"startedAt": task.StartedAt.String(),
 					},
