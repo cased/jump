@@ -25,6 +25,7 @@
    "name": "example-service/test",
    "description": "Default container debug shell",
    "jumpCommand": "docker exec -it $(docker ps --filter \"label=com.amazonaws.ecs.container-name=test\" --filter \"label=com.amazonaws.ecs.task-arn=arn:aws:ecs:us-east-1:012345678910:task/01234567-0123-0123-0123-012345678910\" -q | head -n1)",
+   "preDownloadCommand": "sh -c 'mkdir -p /tmp/cased-downloads; docker cp $(docker ps --filter \"label=com.amazonaws.ecs.container-name=test\" --filter \"label=com.amazonaws.ecs.task-arn=arn:aws:ecs:us-east-1:012345678910:task/01234567-0123-0123-0123-012345678910\" -q | head -n1):{filepath} /tmp/cased-downloads/; echo /tmp/cased-downloads/{filename}'",
    "kind": "container",
    "provider": "ecs",
    "annotations": {

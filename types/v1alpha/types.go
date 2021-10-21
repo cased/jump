@@ -12,23 +12,24 @@ type PromptQuery struct {
 
 // A Prompt represents an interactive command line, and can represent the initial shell presented by an SSH connection to a host OR the interactive session presented by a command run on that host.
 type Prompt struct {
-	Hostname          string            `json:"hostname" yaml:"hostname,omitempty"`                             // The hostname to establish an SSH connection to. Use only for display purposes if IpAddress is provided.
-	Username          string            `json:"username,omitempty" yaml:"username,omitempty"`                   // The username to use to establish an SSH connection to the host.
-	IpAddress         string            `json:"ipAddress,omitempty" yaml:"ipAddress,omitempty"`                 // Optional: the IP address to establish an SSH connection to.
-	Port              string            `json:"port,omitempty" yaml:"port,omitempty"`                           // Optional: the port to use when establishing an SSH connection.
-	Name              string            `json:"name,omitempty" yaml:"name,omitempty"`                           // A descriptive name for this Prompt.
-	Description       string            `json:"description,omitempty" yaml:"description,omitempty"`             // A longer description of this Prompt. Use this field to explain common use cases.
-	JumpCommand       string            `json:"jumpCommand,omitempty" yaml:"jumpCommand,omitempty"`             // Optional: the command to run after establishing an SSH connection to the host
-	ShellCommand      string            `json:"shellCommand,omitempty" yaml:"shellCommand,omitempty"`           // Optional: the command to run on the host or container to start the interactive session.
-	Kind              string            `json:"kind,omitempty" yaml:"kind,omitempty"`                           // The kind of prompt. Currently valid values are "host" and "container".
-	Provider          string            `json:"provider,omitempty" yaml:"provider,omitempty"`                   // The name of the provider that created this prompt.
-	Labels            map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`                       // Optional: a map of key-value pairs containing additional information about this Prompt. The Cased Shell Dashboard may in the future provide functionality to filter Prompts by label values.
-	Annotations       map[string]string `json:"annotations,omitempty" yaml:"annotations,omitempty"`             // Optional: a map of key-value pairs containing additional information about this Prompt. The Cased Shell Dashboard may in the future display these values alongside the Prompt, but is not expected to use them for filtering.
-	Principals        []string          `json:"principals,omitempty" yaml:"principals,omitempty"`               // Optional: a list of users and groups that should have access to this Prompt. The Cased Shell Dashboard will use this information to conditionally display this Prompt.
-	Featured          bool              `json:"featured,omitempty" yaml:"featured,omitempty"`                   // Optional: whether this Prompt should be featured in the Cased Shell Dashboard.
-	PromptForKey      bool              `json:"promptForKey,omitempty" yaml:"promptForKey,omitempty"`           // Set to true to tell the Cased Shell Dashboard to prompt the user for a key.
-	PromptForUsername bool              `json:"promptForUsername,omitempty" yaml:"promptForUsername,omitempty"` // Set to true to tell the Cased Shell Dashboard to prompt the user for a username.
-	ProxyJumpSelector map[string]string `json:"proxyJumpSelector,omitempty" yaml:"proxyJumpSelector,omitempty"` // Optional: a map of key-value pairs matching the labels on an existing prompt. If a matching prompt is found, connections to the prompt containing the ProxyHostJump attribute will be proxied via the matching prompt, similar to SSH's `ProxyJump` option.
+	Hostname           string            `json:"hostname" yaml:"hostname,omitempty"`                               // The hostname to establish an SSH connection to. Use only for display purposes if IpAddress is provided.
+	Username           string            `json:"username,omitempty" yaml:"username,omitempty"`                     // The username to use to establish an SSH connection to the host.
+	IpAddress          string            `json:"ipAddress,omitempty" yaml:"ipAddress,omitempty"`                   // Optional: the IP address to establish an SSH connection to.
+	Port               string            `json:"port,omitempty" yaml:"port,omitempty"`                             // Optional: the port to use when establishing an SSH connection.
+	Name               string            `json:"name,omitempty" yaml:"name,omitempty"`                             // A descriptive name for this Prompt.
+	Description        string            `json:"description,omitempty" yaml:"description,omitempty"`               // A longer description of this Prompt. Use this field to explain common use cases.
+	JumpCommand        string            `json:"jumpCommand,omitempty" yaml:"jumpCommand,omitempty"`               // Optional: the command to run after establishing an SSH connection to the host
+	ShellCommand       string            `json:"shellCommand,omitempty" yaml:"shellCommand,omitempty"`             // Optional: the command to run on the host or container to start the interactive session.
+	PreDownloadCommand string            `json:"preDownloadCommand,omitempty" yaml:"preDownloadCommand,omitempty"` // Optional: a command to run before processing a user request to download a file. The tokens `{filepath}` and `{filename}` will be replaced with the filepath and filename of the file to download. The command is expected to output the path to the file to download to stdout.
+	Kind               string            `json:"kind,omitempty" yaml:"kind,omitempty"`                             // The kind of prompt. Currently valid values are "host" and "container".
+	Provider           string            `json:"provider,omitempty" yaml:"provider,omitempty"`                     // The name of the provider that created this prompt.
+	Labels             map[string]string `json:"labels,omitempty" yaml:"labels,omitempty"`                         // Optional: a map of key-value pairs containing additional information about this Prompt. The Cased Shell Dashboard may in the future provide functionality to filter Prompts by label values.
+	Annotations        map[string]string `json:"annotations,omitempty" yaml:"annotations,omitempty"`               // Optional: a map of key-value pairs containing additional information about this Prompt. The Cased Shell Dashboard may in the future display these values alongside the Prompt, but is not expected to use them for filtering.
+	Principals         []string          `json:"principals,omitempty" yaml:"principals,omitempty"`                 // Optional: a list of users and groups that should have access to this Prompt. The Cased Shell Dashboard will use this information to conditionally display this Prompt.
+	Featured           bool              `json:"featured,omitempty" yaml:"featured,omitempty"`                     // Optional: whether this Prompt should be featured in the Cased Shell Dashboard.
+	PromptForKey       bool              `json:"promptForKey,omitempty" yaml:"promptForKey,omitempty"`             // Set to true to tell the Cased Shell Dashboard to prompt the user for a key.
+	PromptForUsername  bool              `json:"promptForUsername,omitempty" yaml:"promptForUsername,omitempty"`   // Set to true to tell the Cased Shell Dashboard to prompt the user for a username.
+	ProxyJumpSelector  map[string]string `json:"proxyJumpSelector,omitempty" yaml:"proxyJumpSelector,omitempty"`   // Optional: a map of key-value pairs matching the labels on an existing prompt. If a matching prompt is found, connections to the prompt containing the ProxyHostJump attribute will be proxied via the matching prompt, similar to SSH's `ProxyJump` option.
 
 	// TODO combine JumpCommand and ShellCommand into a single InitialCommand when serializing to JSON
 	// InitialCommand    string            `json:"initialCommand,omitempty" yaml:"initialCommand,omitempty"`
@@ -73,6 +74,9 @@ func (p *Prompt) DecorateWithQuery(query *PromptQuery) *Prompt {
 		}
 		if query.Prompt.ShellCommand != "" {
 			p.ShellCommand = query.Prompt.ShellCommand
+		}
+		if query.Prompt.PreDownloadCommand != "" {
+			p.PreDownloadCommand = query.Prompt.PreDownloadCommand
 		}
 		if query.Prompt.Kind != "" {
 			p.Kind = query.Prompt.Kind
