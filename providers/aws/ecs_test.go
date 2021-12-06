@@ -95,7 +95,7 @@ func TestECSProvider(t *testing.T) {
 		{
 			Name:     "Default ECS cluster with one container and no filters",
 			YamlPath: "testdata/ecs_test_default.yml",
-			WantPrompts: []*jump.Prompt{
+			WantPrompts: jump.Prompts([]*jump.Prompt{
 				{
 					Hostname:           "12345678.example.com",
 					Name:               "example-service/example-container-name",
@@ -107,7 +107,7 @@ func TestECSProvider(t *testing.T) {
 					Annotations: map[string]string{
 						"startedAt": "2015-03-26 19:54:00 +0000 UTC",
 					}},
-			},
+			}),
 			MockEC2: &MockEC2{
 				DescribeInstancesFunc: func(query *jump.PromptQuery, input *ec2.DescribeInstancesInput) (*ec2.DescribeInstancesOutput, error) {
 					return &ec2.DescribeInstancesOutput{
@@ -203,7 +203,7 @@ func TestECSProvider(t *testing.T) {
 		{
 			Name:     "Multiple queries, complex filters",
 			YamlPath: "testdata/ecs_test_complex_filters.yml",
-			WantPrompts: []*jump.Prompt{
+			WantPrompts: jump.Prompts([]*jump.Prompt{
 				{
 					Hostname:           "12345678.test-cluster.us-west-1.example.com",
 					JumpCommand:        "docker exec -it $(docker ps --filter \"label=com.amazonaws.ecs.container-name=test-container-name\" --filter \"label=com.amazonaws.ecs.task-arn=arn:aws:ecs:us-east-1:123456789012:task/test-task-id\" -q | head -n1)",
@@ -242,7 +242,7 @@ func TestECSProvider(t *testing.T) {
 						"startedAt": "2021-03-26 19:54:00 +0000 UTC",
 					},
 				},
-			},
+			}),
 			MockEC2: &MockEC2{
 				DescribeInstancesFunc: func(query *jump.PromptQuery, input *ec2.DescribeInstancesInput) (*ec2.DescribeInstancesOutput, error) {
 					return &ec2.DescribeInstancesOutput{

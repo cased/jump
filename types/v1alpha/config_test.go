@@ -30,14 +30,14 @@ func TestConfigRoundTrip(t *testing.T) {
 		{
 			Name:         "example",
 			ConfigPaths:  []string{"testdata/example_config.yaml", "testdata/example_config2.yaml", "testdata/empty.yaml"},
-			ManifestPath: "testdata/example_manifest.json",
+			ManifestPath: "testdata/out/example.json",
 			EC2Interface: mockEC2twoInstance,
 			ECSInterface: mockECSoneContainer,
 		},
 		{
 			Name:         "terraform-defaults",
 			ConfigPaths:  []string{"testdata/terraform-default-queries.json"},
-			ManifestPath: "testdata/terraform-default-manifest.json",
+			ManifestPath: "testdata/out/terraform-defaults.json",
 			EC2Interface: mockEC2twoInstance,
 			ECSInterface: mockECSoneContainer,
 		},

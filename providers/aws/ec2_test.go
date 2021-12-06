@@ -74,7 +74,7 @@ func TestEC2Provider(t *testing.T) {
 					}, nil
 				},
 			},
-			WantPrompts: []*jump.Prompt{
+			WantPrompts: jump.Prompts([]*jump.Prompt{
 				{
 					Name:        "i-12345678",
 					Description: "An EC2 instance",
@@ -85,7 +85,7 @@ func TestEC2Provider(t *testing.T) {
 						"launchTime": "2021-07-11T00:00:00Z",
 					},
 				},
-			},
+			}),
 		},
 		{
 			Name:     "Filters",
@@ -146,7 +146,7 @@ func TestEC2Provider(t *testing.T) {
 					}, nil
 				},
 			},
-			WantPrompts: []*jump.Prompt{
+			WantPrompts: jump.Prompts([]*jump.Prompt{
 				{
 					Name:        "i-12345678",
 					Description: "The most recently launched test instance in us-south-1",
@@ -161,7 +161,7 @@ func TestEC2Provider(t *testing.T) {
 						"launchTime": "2021-07-11T00:00:00Z",
 					},
 				},
-			},
+			}),
 		},
 	}
 

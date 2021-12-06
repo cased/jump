@@ -8,7 +8,8 @@
    "provider": "ec2",
    "annotations": {
     "launchTime": "2021-07-11T00:00:00Z"
-   }
+   },
+   "closeTerminalOnExit": true
   },
   {
    "hostname": "12345678.example.com",
@@ -18,7 +19,8 @@
    "provider": "ec2",
    "annotations": {
     "launchTime": "2021-07-11T00:00:00Z"
-   }
+   },
+   "closeTerminalOnExit": true
   }
  ]
 }
