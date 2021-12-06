@@ -10,7 +10,7 @@ import (
 	"github.com/cased/jump/providers/aws"
 	"github.com/cased/jump/providers/static"
 	jump "github.com/cased/jump/types/v1alpha"
-	"github.com/kylelemons/godebug/pretty"
+	"github.com/nsf/jsondiff"
 )
 
 func init() {
@@ -84,7 +84,9 @@ func TestConfigRoundTrip(t *testing.T) {
 				t.Fatalf("%s written, please manually validate", testCase.ManifestPath)
 			}
 			if string(want) != string(got) {
-				t.Fatal(pretty.Compare(string(want), string(got)))
+				opts := jsondiff.DefaultConsoleOptions()
+				_, diff := jsondiff.Compare(want, got, &opts)
+				t.Fatalf("%s failed. Delete if you'd like to regenerate. Diff: \n%s\n", testCase.ManifestPath, diff)
 			}
 		})
 	}
