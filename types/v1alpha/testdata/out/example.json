@@ -8,7 +8,8 @@
    "provider": "ec2",
    "annotations": {
     "launchTime": "2021-07-11T00:00:00Z"
-   }
+   },
+   "closeTerminalOnExit": true
   },
   {
    "hostname": "9101112.example.com",
@@ -18,7 +19,8 @@
    "provider": "ec2",
    "annotations": {
     "launchTime": "2020-07-11T00:00:00Z"
-   }
+   },
+   "closeTerminalOnExit": true
   },
   {
    "hostname": "12345678.example.com",
@@ -31,6 +33,7 @@
    "annotations": {
     "startedAt": "2015-03-26 19:54:00 +0000 UTC"
    },
+   "closeTerminalOnExit": true,
    "proxyJumpSelector": {
     "app": "bastion"
    }
@@ -43,7 +46,20 @@
    "labels": {
     "app": "bastion"
    },
-   "featured": true
+   "featured": true,
+   "closeTerminalOnExit": true
+  },
+  {
+   "hostname": "example.com",
+   "username": "example",
+   "port": "2222",
+   "shellCommand": "echo \"Hello World\"",
+   "provider": "static",
+   "labels": {
+    "app": "bastion"
+   },
+   "featured": true,
+   "closeTerminalOnExit": false
   }
  ]
 }

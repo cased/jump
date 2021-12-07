@@ -10,7 +10,7 @@ import (
 	"github.com/cased/jump/providers/aws"
 	"github.com/cased/jump/providers/static"
 	jump "github.com/cased/jump/types/v1alpha"
-	"github.com/kylelemons/godebug/pretty"
+	"github.com/nsf/jsondiff"
 )
 
 func init() {
@@ -30,14 +30,14 @@ func TestConfigRoundTrip(t *testing.T) {
 		{
 			Name:         "example",
 			ConfigPaths:  []string{"testdata/example_config.yaml", "testdata/example_config2.yaml", "testdata/empty.yaml"},
-			ManifestPath: "testdata/example_manifest.json",
+			ManifestPath: "testdata/out/example.json",
 			EC2Interface: mockEC2twoInstance,
 			ECSInterface: mockECSoneContainer,
 		},
 		{
 			Name:         "terraform-defaults",
 			ConfigPaths:  []string{"testdata/terraform-default-queries.json"},
-			ManifestPath: "testdata/terraform-default-manifest.json",
+			ManifestPath: "testdata/out/terraform-defaults.json",
 			EC2Interface: mockEC2twoInstance,
 			ECSInterface: mockECSoneContainer,
 		},
@@ -84,7 +84,9 @@ func TestConfigRoundTrip(t *testing.T) {
 				t.Fatalf("%s written, please manually validate", testCase.ManifestPath)
 			}
 			if string(want) != string(got) {
-				t.Fatal(pretty.Compare(string(want), string(got)))
+				opts := jsondiff.DefaultConsoleOptions()
+				_, diff := jsondiff.Compare(want, got, &opts)
+				t.Fatalf("%s failed. Delete if you'd like to regenerate. Diff: \n%s\n", testCase.ManifestPath, diff)
 			}
 		})
 	}

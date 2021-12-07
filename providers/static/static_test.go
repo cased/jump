@@ -8,33 +8,73 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func TestStaticProvider(t *testing.T) {
-	// TODO test tables etc
-	config := `
-queries:
-  - provider: static
-    prompt:
-      hostname: example.com
-      username: example
-`
-	c := &jump.AutoDiscoveryConfig{}
-	err := yaml.Unmarshal([]byte(config), c)
-	if err != nil {
-		t.Error(err)
-	}
+type testCase struct {
+	Config string
+	Tests  func(*testing.T, *jump.Prompt)
+}
 
-	static := &static.Static{}
-	got, err := static.Discover(c.Queries)
-	if err != nil {
-		t.Error(err)
+func TestStaticProvider(t *testing.T) {
+	testTable := []testCase{
+		{
+			Config: `
+queries:
+- provider: static
+  prompt:
+    name: simple example
+    hostname: example.com
+    username: example
+`,
+			Tests: func(t *testing.T, p *jump.Prompt) {
+				want := "example.com"
+				if p.Hostname != want {
+					t.Errorf("got %q, want %q", p.Hostname, want)
+				}
+				if *p.CloseTerminalOnExit != true {
+					t.Errorf("got %v, want %v", p.CloseTerminalOnExit, true)
+				}
+			},
+		},
+		{
+			Config: `
+queries:
+- provider: static
+  prompt:
+    name: example Command
+    hostname: example.com
+    username: example
+    shellCommand: echo hello
+    closeTerminalOnExit: false
+`,
+			Tests: func(t *testing.T, p *jump.Prompt) {
+				want := "example"
+				if p.Username != want {
+					t.Errorf("got %q, want %q", p.Hostname, want)
+				}
+				if *p.CloseTerminalOnExit != false {
+					t.Errorf("got %v, want %v", *p.CloseTerminalOnExit, false)
+				}
+			},
+		},
 	}
-	if len(got) != 1 {
-		t.Errorf("Expected 1 result, got %d", len(got))
-	}
-	if got[0].Hostname != "example.com" {
-		t.Error("Expected example.com, got", got[0].Hostname)
-	}
-	if got[0].Username != "example" {
-		t.Error("Expected example, got", got[0].Username)
+	for _, test := range testTable {
+		c := &jump.AutoDiscoveryConfig{}
+		err := yaml.Unmarshal([]byte(test.Config), c)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		static := &static.Static{}
+		got, err := static.Discover(c.Queries)
+		if err != nil {
+			t.Fatal(err)
+		}
+		want := 1
+		if len(got) != want {
+			t.Fatalf("Expected %d result, got %d", want, len(got))
+		}
+		p := got[0]
+		t.Run(p.Name, func(t *testing.T) {
+			test.Tests(t, p)
+		})
 	}
 }

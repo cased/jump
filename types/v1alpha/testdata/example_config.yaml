@@ -7,6 +7,16 @@ queries:
       port: 2222
       labels:
         app: bastion
+  - provider: static
+    prompt:
+      featured: true
+      hostname: example.com
+      username: example
+      shellCommand: 'echo "Hello World"'
+      closeTerminalOnExit: false
+      port: 2222
+      labels:
+        app: bastion
   - provider: ecs
     prompt:
       description: Default container debug shell
