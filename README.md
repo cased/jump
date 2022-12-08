@@ -8,6 +8,10 @@ Jump is a auto-discovery agent designed to run alongside of Cased Shell. It read
 ./jump queries.yaml [queries2.yaml ...] results.json
 ```
 
+## Environment Variables
+
+- `LOG_LEVEL`: Defaults to `info`. Can be set to `debug` for more information.
+
 ## Writing Queries
 
 Queries have several components:

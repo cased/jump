@@ -115,7 +115,9 @@ func GetAWSSession(region string) (*session.Session, error) {
 		if err != nil {
 			return nil, err
 		}
-		log.Printf("[aws] Authenticated as %s in %s\n", *result.Arn, region)
+		if os.Getenv("LOG_LEVEL") == "debug" {
+			log.Printf("[aws] Authenticated as %s in %s\n", *result.Arn, region)
+		}
 
 		regionSessions[region] = regionSession
 	}
