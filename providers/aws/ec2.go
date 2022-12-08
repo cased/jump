@@ -12,7 +12,7 @@ import (
 
 // The EC2 auto-discovery Provider queries AWS for running EC2 instances.
 //
-// Filters
+// # Filters
 //
 // The EC2 Provider accepts the following filters:
 //
@@ -21,14 +21,13 @@ import (
 // In addition to the above filter keys, the EC2 Provider also accepts all keys that are valid for
 // `ec2.DescribeInstanceInput.Filters`, documentation on which is available at https://docs.aws.amazon.com/sdk-for-go/api/service/ec2/#DescribeInstancesInput.
 //
-// Sorting
+// # Sorting
 //
 // The EC2 Provider supports sorting by the following keys:
 //
 // - launchTime
 //
-//
-// Annotations
+// # Annotations
 //
 // The EC2 Provider appends the following annotations to each Prompt:
 //
