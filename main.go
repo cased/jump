@@ -43,7 +43,9 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		log.Printf("Wrote %d prompts to manifest\n", len(prompts))
+		if os.Getenv("LOG_LEVEL") == "debug" {
+			log.Printf("Wrote %d prompts to manifest\n", len(prompts))
+		}
 
 		if os.Getenv("ONCE") != "" {
 			return

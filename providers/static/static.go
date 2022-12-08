@@ -7,11 +7,11 @@ import (
 // The Static auto-discovery Provider is a bit of an oxymoron: it performs no discovery and returns the Prompt passed to it.
 // Use it to include a list of Static prompts alongside other auto-discovered entries.
 //
-// Filters
+// # Filters
 //
 // The Static Provider ignores all provided filters.
 //
-// Sorting
+// # Sorting
 //
 // The Static Provider ignores all provided sorting options.
 type Static struct {
