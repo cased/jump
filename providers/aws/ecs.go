@@ -14,7 +14,7 @@ import (
 
 // The ECS auto-discovery Provider queries ECS for running containers on EC2 instances and constructs the `docker exec` arguments necessary to run a command inside those containers.
 //
-// Filters
+// # Filters
 //
 // The ECS Provider accepts the following filters:
 //
@@ -23,13 +23,13 @@ import (
 // - task-group: The name of the ECS Task Group.
 // - container-name: The name of a running Container.
 //
-// Sorting
+// # Sorting
 //
 // The ECS Provider supports sorting by the following keys:
 //
 // - startedAt
 //
-// Annotations
+// # Annotations
 //
 // The ECS Provider appends the following annotations to each Prompt:
 //

@@ -12,7 +12,7 @@ networks:
 
 services:
     ec2-metadata:
-        image: amazon/amazon-ec2-metadata-mock:v1.9.0
+        image: public.ecr.aws/aws-ec2/amazon-ec2-metadata-mock:v1.11.2
         command: -p 80
         privileged: true
         expose:
@@ -23,12 +23,13 @@ services:
                 ipv4_address: "169.254.169.254"
             default:
 
+
     localstack:
         init: true
         environment:
             - DEFAULT_REGION=us-east-1
             - SERVICES=iam,sts,ec2
-        image: localstack/localstack:0.12.16
+        image: localstack/localstack:1.3.0
         networks:
             - default
         ports:
@@ -57,8 +58,11 @@ services:
             localstack:
                 condition: service_healthy
 
-        entrypoint: ["/bin/sh", "-exc"]        
-        command: ["cd /config/ && terraform init && terraform apply -auto-approve && touch /root/done.generated && exec tail -F /tmpnotexist"]
+        entrypoint: [ "/bin/sh", "-exc" ]
+        command:
+            [
+                "cd /config/ && terraform init && terraform apply -auto-approve && touch /root/done.generated && exec tail -F /tmpnotexist"
+            ]
         healthcheck:
             test:
                 - CMD
@@ -68,7 +72,6 @@ services:
             interval: 5s
             timeout: 1s
             start_period: 30s
-
 
     ecs-local-endpoints:
         image: amazon/amazon-ecs-local-container-endpoints:1.4.0-amd64
@@ -89,15 +92,21 @@ services:
                 ipv4_address: "169.254.170.2"
             default:
 
+
     app:
         build: .
-        command: ["/config/static.yaml", "/config/terraform-defaults.json", "/config/manifest.json.generated"]
+        command:
+            [
+                "/config/static.yaml",
+                "/config/terraform-defaults.json",
+                "/config/manifest.json.generated"
+            ]
         volumes:
             - ./testdata:/config
         depends_on:
             terraform-apply:
                 condition: service_healthy
-            ecs-local-endpoints: 
+            ecs-local-endpoints:
                 condition: service_started
             ec2-metadata:
                 condition: service_started
